@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0448FCF42B05199500A182F0 /* WOT-Scryfall.json in Resources */ = {isa = PBXBuildFile; fileRef = 0448FCF32B05199500A182F0 /* WOT-Scryfall.json */; };
 		0449D2BD2AFDB81F00A226F5 /* W9_MobCompApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0449D2BC2AFDB81F00A226F5 /* W9_MobCompApp.swift */; };
 		0449D2BF2AFDB81F00A226F5 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0449D2BE2AFDB81F00A226F5 /* ContentView.swift */; };
 		0449D2C12AFDB82000A226F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0449D2C02AFDB82000A226F5 /* Assets.xcassets */; };
@@ -14,7 +15,6 @@
 		0449D2CE2AFDB82000A226F5 /* W9_MobCompTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0449D2CD2AFDB82000A226F5 /* W9_MobCompTests.swift */; };
 		0449D2D82AFDB82000A226F5 /* W9_MobCompUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0449D2D72AFDB82000A226F5 /* W9_MobCompUITests.swift */; };
 		0449D2DA2AFDB82000A226F5 /* W9_MobCompUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0449D2D92AFDB82000A226F5 /* W9_MobCompUITestsLaunchTests.swift */; };
-		0449D2E92AFDBAB500A226F5 /* WOT-Scryfall.json in Resources */ = {isa = PBXBuildFile; fileRef = 0449D2E82AFDBAB500A226F5 /* WOT-Scryfall.json */; };
 		0449D2EB2AFDBD5D00A226F5 /* MTGCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0449D2EA2AFDBD5D00A226F5 /* MTGCard.swift */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0448FCF32B05199500A182F0 /* WOT-Scryfall.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "WOT-Scryfall.json"; sourceTree = "<group>"; };
 		0449D2B92AFDB81F00A226F5 /* W9-MobComp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "W9-MobComp.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0449D2BC2AFDB81F00A226F5 /* W9_MobCompApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = W9_MobCompApp.swift; sourceTree = "<group>"; };
 		0449D2BE2AFDB81F00A226F5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -46,7 +47,6 @@
 		0449D2D32AFDB82000A226F5 /* W9-MobCompUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "W9-MobCompUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0449D2D72AFDB82000A226F5 /* W9_MobCompUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = W9_MobCompUITests.swift; sourceTree = "<group>"; };
 		0449D2D92AFDB82000A226F5 /* W9_MobCompUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = W9_MobCompUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		0449D2E82AFDBAB500A226F5 /* WOT-Scryfall.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "WOT-Scryfall.json"; path = "../../../Downloads/WOT-Scryfall.json"; sourceTree = "<group>"; };
 		0449D2EA2AFDBD5D00A226F5 /* MTGCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTGCard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -101,7 +101,7 @@
 				0449D2BC2AFDB81F00A226F5 /* W9_MobCompApp.swift */,
 				0449D2BE2AFDB81F00A226F5 /* ContentView.swift */,
 				0449D2EA2AFDBD5D00A226F5 /* MTGCard.swift */,
-				0449D2E82AFDBAB500A226F5 /* WOT-Scryfall.json */,
+				0448FCF32B05199500A182F0 /* WOT-Scryfall.json */,
 				0449D2C02AFDB82000A226F5 /* Assets.xcassets */,
 				0449D2C22AFDB82000A226F5 /* Preview Content */,
 			);
@@ -239,7 +239,7 @@
 			files = (
 				0449D2C42AFDB82000A226F5 /* Preview Assets.xcassets in Resources */,
 				0449D2C12AFDB82000A226F5 /* Assets.xcassets in Resources */,
-				0449D2E92AFDBAB500A226F5 /* WOT-Scryfall.json in Resources */,
+				0448FCF42B05199500A182F0 /* WOT-Scryfall.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
