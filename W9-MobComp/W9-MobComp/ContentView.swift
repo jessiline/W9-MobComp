@@ -7,6 +7,9 @@ struct MTGCardView: View {
     var mtgCards: [MTGCard]
     @State private var currentIndex: Int
     @State private var selectedButton: String?
+    @State private var isArtCrop = true
+    @State private var isImagePopupVisible = false
+
     
     init(mtgCards: [MTGCard], currentIndex: Int) {
         self.mtgCards = mtgCards
@@ -16,7 +19,7 @@ struct MTGCardView: View {
     var body: some View {
         VStack {
             ScrollView {
-                AsyncImage(url: URL(string: mtgCards[currentIndex].image_uris?.large ?? "")) { phase in
+                AsyncImage(url: URL(string: mtgCards[currentIndex].image_uris?.art_crop ?? "")) { phase in
                     switch phase {
                     case .success(let image):
                         image
@@ -81,6 +84,7 @@ struct MTGCardView: View {
                         }
                         .padding(.vertical, 16)
                         
+                        
                         // cek yg di klik rulings/version
                         if selectedButton == "Rulings" {
                             Text("LEGALITIES")
@@ -127,7 +131,31 @@ struct MTGCardView: View {
                         .disabled(currentIndex == mtgCards.count - 1) // Disable the button if it's the last card
                     }
                 }
+                .onTapGesture {
+                    isImagePopupVisible.toggle()
+                }
                 .padding()
+                .sheet(isPresented: $isImagePopupVisible) {
+                    // Display the large image in a popup
+                    if let largeImageUrl = URL(string: mtgCards[currentIndex].image_uris?.large ?? "") {
+                        AsyncImage(url: largeImageUrl) { phase in
+                            switch phase {
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            case .failure:
+                                Text("Failed to load image")
+                            case .empty:
+                                ProgressView()
+                            @unknown default:
+                                ProgressView()
+                            }
+                        }
+                        .padding()
+                    }
+                }
                 
             }
             .gesture(
@@ -142,6 +170,7 @@ struct MTGCardView: View {
                     }
             )
         }
+        
         
 
     }

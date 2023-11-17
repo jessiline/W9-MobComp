@@ -43,6 +43,7 @@ struct MTGCard: Codable, Identifiable {
         var small: String?
         var normal: String?
         var large: String?
+        var art_crop: String?
 
     }
     struct PricesList: Codable {
