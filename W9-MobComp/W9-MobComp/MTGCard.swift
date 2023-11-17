@@ -36,6 +36,7 @@ struct MTGCard: Codable, Identifiable {
     var type_line: String
     var oracle_text: String
     var image_uris: ImageURIs?
+    var collector_number: String
     var legalities: LegalitiesList
     var prices: PricesList?
 
@@ -49,19 +50,15 @@ struct MTGCard: Codable, Identifiable {
     struct PricesList: Codable {
             var usd: String?
             var usd_foil: String?
-            var usd_etched: String?
             var eur: String?
             var eur_foil: String?
-            var tix: String?
         func dictionaryRepresentation() -> [String: String] {
                     var dictionary = [String: String]()
 
                     if let usd = usd { dictionary["USD"] = usd }
                     if let usd_foil = usd_foil { dictionary["USD Foil"] = usd_foil }
-                    if let usd_etched = usd_etched { dictionary["USD Etched"] = usd_etched }
                     if let eur = eur { dictionary["EUR"] = eur }
                     if let eur_foil = eur_foil { dictionary["EUR Foil"] = eur_foil }
-                    if let tix = tix { dictionary["TIX"] = tix }
 
                     return dictionary
                 }

@@ -25,6 +25,10 @@ struct MTGCardView: View {
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
+                                .cornerRadius(7)
+                                .onTapGesture { // Moved onTapGesture here
+                                    isImagePopupVisible.toggle()
+                                }
                         case .failure:
                             Image(systemName: "exclamationmark.triangle")
                                 .resizable()
@@ -119,74 +123,71 @@ struct MTGCardView: View {
                             Button("Previous") {
                                 navigateToPreviousCard()
                             }
-                            .foregroundColor(.blue)
+
                             .padding()
-                            .disabled(currentIndex == 0) // Disable the button if it's the first card
-                            
+                            .foregroundColor(currentIndex == 0 ? .gray : .blue)
+
                             Spacer()
                             
                             Button("Next") {
                                 navigateToNextCard()
                             }
-                            .foregroundColor(.blue)
-                            
+                            .foregroundColor(currentIndex == mtgCards.count - 1 ? .gray : .blue)
+
                             .padding()
-                            .disabled(currentIndex == mtgCards.count - 1) // Disable the button if it's the last card
                         }
                     }
-                    .onTapGesture {
-                        isImagePopupVisible.toggle()
-                    }
+          
                     .padding()
-                    .overlay(
-                        isImagePopupVisible ? AnyView(
-                            ZStack {
-                                Color.black.opacity(0.5).ignoresSafeArea()
-                                
-                                VStack {
-                                    if let largeImageUrl = URL(string: mtgCards[currentIndex].image_uris?.large ?? "") {
-                                        AsyncImage(url: largeImageUrl) { phase in
-                                            switch phase {
-                                            case .success(let image):
-                                                image
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                            case .failure:
-                                                Text("Failed to load image")
-                                            case .empty:
-                                                ProgressView()
-                                            @unknown default:
-                                                ProgressView()
-                                            }
-                                        }
-                                        .padding()
-                                    }
-                                }
-                      
-                            }
-                            .onTapGesture {
-                                isImagePopupVisible.toggle()
-                            }
-                        ) : AnyView(EmptyView())
-                    )
-
                     
                 }
-            
-            .gesture(
-                DragGesture()
-                    .onEnded { gesture in
-                        let swipeThreshold: CGFloat = 50
-                        if gesture.translation.width > swipeThreshold {
-                            navigateToPreviousCard()
-                        } else if gesture.translation.width < -swipeThreshold {
-                            navigateToNextCard()
+                .overlay(
+                    isImagePopupVisible ? AnyView(
+                        ZStack {
+                            Color.black.opacity(0.5).ignoresSafeArea()
+                            
+                            VStack {
+                                if let largeImageUrl = URL(string: mtgCards[currentIndex].image_uris?.large ?? "") {
+                                    AsyncImage(url: largeImageUrl) { phase in
+                                        switch phase {
+                                        case .success(let image):
+                                            image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(maxWidth: .infinity)
+                                                .cornerRadius(7)
+                                        case .failure:
+                                            Text("Failed to load image")
+                                        case .empty:
+                                            ProgressView()
+                                        @unknown default:
+                                            ProgressView()
+                                        }
+                                    }
+                                    .padding()
+                                }
+                            }
+                  
                         }
-                    }
-            )
+                        .onTapGesture {
+                            isImagePopupVisible.toggle()
+                        }
+                    ) : AnyView(EmptyView())
+                )
+            
         }
-
+        .gesture(
+            DragGesture()
+                .onEnded { gesture in
+                    let swipeThreshold: CGFloat = 50
+                    if gesture.translation.width > swipeThreshold {
+                        navigateToPreviousCard()
+                    } else if gesture.translation.width < -swipeThreshold {
+                        navigateToNextCard()
+                    }
+                }
+        )
+      
     }
     private func navigateToNextCard() {
         if currentIndex < mtgCards.count - 1 {
@@ -195,7 +196,6 @@ struct MTGCardView: View {
         selectedButton = nil
     }
     
-    // Function to navigate to the previous card
     private func navigateToPreviousCard() {
         if currentIndex > 0 {
             currentIndex -= 1
@@ -255,8 +255,8 @@ struct SearchBar: View {
     var body: some View {
         HStack {
             TextField("Search", text: $searchText)
-                .padding(7)
-                .padding(.horizontal, 25)
+                .padding(5)
+                .padding(.horizontal, 35)
                 .background(Color(.systemGray6))
                 .cornerRadius(8)
                 .padding(.horizontal, 10)
@@ -268,19 +268,22 @@ struct SearchBar: View {
                             .padding(.leading, 8)
                             .padding(.trailing, 4)
                     }
+                        .padding()
                 )
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
+            
         }
-        .padding(.top, 10)
-        .padding(.bottom, 5)
+
     }
 }
 
 struct ContentView: View {
     @State private var mtgCards: [MTGCard] = []
     @State private var searchText: String = ""
-    @State private var isSortingAscending = true
+    @State private var isSortingAZAscending = true
+    @State private var isSortingCollectorAscending = true
+    @State private var clickedButton = true
 
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
 
@@ -292,8 +295,22 @@ struct ContentView: View {
         }
     }
     var sortedCards: [MTGCard] {
-        return filteredCards.sorted {
-            isSortingAscending ? $0.name < $1.name : $0.name > $1.name
+           return filteredCards.sorted {
+               if isSortingAZAscending {
+                   return $0.name < $1.name
+               } else {
+                   return $0.name > $1.name
+               }
+           }
+       }
+
+    var sortedCardsByCollector: [MTGCard] {
+        return sortedCards.sorted {
+            if isSortingCollectorAscending {
+                return Int($0.collector_number) ?? 0 < Int($1.collector_number) ?? 0
+            } else {
+                return Int($0.collector_number) ?? 0 > Int($1.collector_number) ?? 0
+            }
         }
     }
 
@@ -303,27 +320,52 @@ struct ContentView: View {
                 ScrollView {
                     HStack {
                        SearchBar(searchText: $searchText)
-                       
-                       // sorting button
-                       Button(action: {
-                           isSortingAscending.toggle()
-                       }) {
-                           Image(systemName: isSortingAscending ? "arrow.down.circle.fill" : "arrow.up.circle.fill")
-                               .foregroundColor(.blue)
-                       }
-                       .padding(.trailing, 10)
-                   }
+                        Button(action: {
+                            isSortingAZAscending.toggle()
+                            isSortingCollectorAscending = false
+                            clickedButton = true
+                            
+                        }) {
+                            Text("a-z")
+                                .foregroundColor(.blue)
+                                .padding(.trailing, 5.0)
+                        }
 
-                    LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(sortedCards.indices, id: \.self) { index in
-                            NavigationLink(destination: MTGCardView(mtgCards: sortedCards, currentIndex: index)) {
-                                CardImageView(card: sortedCards[index])
-                                    .frame(height: 220)
-                            }
+                        // Collector Number sorting button
+                        Button(action: {
+                            isSortingCollectorAscending.toggle()
+                            clickedButton = false
+                            
+                        }) {
+                            Text("num")
+                                .foregroundColor(.blue)
                         }
                     }
-
                     .padding()
+                    if clickedButton == true {
+                        LazyVGrid(columns: columns, spacing: 16) {
+                                ForEach(sortedCards.indices, id: \.self) { index in
+                                    NavigationLink(destination: MTGCardView(mtgCards: sortedCards, currentIndex: index)) {
+                                        CardImageView(card: sortedCards[index])
+                                            .frame(height: 215)
+                                    }
+                                }
+                        }
+                        .padding()
+                    }
+                    if clickedButton == false{
+                        LazyVGrid(columns: columns, spacing: 16) {
+                            ForEach(sortedCardsByCollector.indices, id: \.self) { index in
+                                NavigationLink(destination: MTGCardView(mtgCards: sortedCardsByCollector, currentIndex: index)) {
+                                    CardImageView(card: sortedCardsByCollector[index])
+                                        .frame(height: 215)
+                                        .cornerRadius(10)
+                                }
+                            }
+                        }
+                        .padding()
+
+                    }
                 }
                 .onAppear {
                     // Load data from a JSON file
@@ -398,6 +440,7 @@ struct CardImageView: View {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
+                        .cornerRadius(5)
                 case .failure:
                     Image(systemName: "exclamationmark.triangle")
                         .resizable()
