@@ -18,146 +18,162 @@ struct MTGCardView: View {
     
     var body: some View {
         VStack {
-            ScrollView {
-                AsyncImage(url: URL(string: mtgCards[currentIndex].image_uris?.art_crop ?? "")) { phase in
-                    switch phase {
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                    case .failure:
-                        Image(systemName: "exclamationmark.triangle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .foregroundColor(.red)
-                    case .empty:
-                        ProgressView()
-                    @unknown default:
-                        ProgressView()
-                    }
-                    // judul yg di detail card
-                    Text(mtgCards[currentIndex].name)
-                        .font(.title)
-                        .padding()
-                    VStack(alignment: .leading) {
-                        Text("\(mtgCards[currentIndex].type_line)") //deskripsi kartu
-                            .fontWeight(.bold)
-                        Text("(\(mtgCards[currentIndex].oracle_text))")
-                        HStack {
-                            Spacer()
-                            
-                            // Button u/ Versions
-                            Button("Versions") {
-                                selectedButton = "Versions"
-                            }
-                            .padding(.horizontal, 45.0)
-                            .padding(.vertical, 15.0)
-                            .frame(maxHeight: .infinity)
-                            .background(
-                                Capsule()
-                                .fill(selectedButton == "Versions" ? Color.red : Color.clear) // Change background color to red if selected
-                                .overlay(
+                ScrollView {
+                    AsyncImage(url: URL(string: mtgCards[currentIndex].image_uris?.art_crop ?? "")) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        case .failure:
+                            Image(systemName: "exclamationmark.triangle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .foregroundColor(.red)
+                        case .empty:
+                            ProgressView()
+                        @unknown default:
+                            ProgressView()
+                        }
+                        // judul yg di detail card
+                        Text(mtgCards[currentIndex].name)
+                            .font(.title)
+                            .padding()
+                        VStack(alignment: .leading) {
+                            Text("\(mtgCards[currentIndex].type_line)") //deskripsi kartu
+                                .fontWeight(.bold)
+                            Text("(\(mtgCards[currentIndex].oracle_text))")
+                            HStack {
+                                Spacer()
+                                
+                                // Button u/ Versions
+                                Button("Versions") {
+                                    selectedButton = "Versions"
+                                }
+                                .padding(.horizontal, 45.0)
+                                .padding(.vertical, 15.0)
+                                .frame(maxHeight: .infinity)
+                                .background(
                                     Capsule()
-                                        .stroke(Color.gray, lineWidth: 1)
-                                )
-                            )
-                            .foregroundColor(selectedButton == "Versions" ? .white : .black)
-                            
-                            
-                            // Button u/ Rulings
-                            Button("Rulings") {
-                                selectedButton = "Rulings"
-                            }
-                            .padding(.horizontal, 50.0)
-                            .frame(maxHeight: .infinity)
-                            .background(
-                                Capsule()
-                                    .fill(selectedButton == "Rulings" ? Color.red : Color.clear) // Change background color to red if selected
+                                    .fill(selectedButton == "Versions" ? Color.red : Color.clear) // Change background color to red if selected
                                     .overlay(
                                         Capsule()
                                             .stroke(Color.gray, lineWidth: 1)
                                     )
-                            )
-                            .foregroundColor(selectedButton == "Rulings" ? .white : .black)
+                                )
+                                .foregroundColor(selectedButton == "Versions" ? .white : .black)
+                                
+                                
+                                // Button u/ Rulings
+                                Button("Rulings") {
+                                    selectedButton = "Rulings"
+                                }
+                                .padding(.horizontal, 50.0)
+                                .frame(maxHeight: .infinity)
+                                .background(
+                                    Capsule()
+                                        .fill(selectedButton == "Rulings" ? Color.red : Color.clear) // Change background color to red if selected
+                                        .overlay(
+                                            Capsule()
+                                                .stroke(Color.gray, lineWidth: 1)
+                                        )
+                                )
+                                .foregroundColor(selectedButton == "Rulings" ? .white : .black)
+                                
+                                Spacer()
+                            }
+                            .padding(.vertical, 16)
                             
-                            Spacer()
-                        }
-                        .padding(.vertical, 16)
-                        
-                        
-                        // cek yg di klik rulings/version
-                        if selectedButton == "Rulings" {
-                            Text("LEGALITIES")
-                                .fontWeight(.bold)
-                                .foregroundColor(Color.red)
                             
-                            LazyVGrid(columns: [GridItem(), GridItem()]) {
-                                ForEach(Array(Mirror(reflecting: mtgCards[currentIndex].legalities).children), id: \.label) { child in
-                                    if let label = child.label, let value = child.value as? String {
-                                        let displayValue = value == "not_legal" ? "not legal" : value
-                                        LegalitiesItem(value: displayValue, key: label.capitalized)
+                            // cek yg di klik rulings/version
+                            if selectedButton == "Rulings" {
+                                Text("LEGALITIES")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color.red)
+                                
+                                LazyVGrid(columns: [GridItem(), GridItem()]) {
+                                    ForEach(Array(Mirror(reflecting: mtgCards[currentIndex].legalities).children), id: \.label) { child in
+                                        if let label = child.label, let value = child.value as? String {
+                                            let displayValue = value == "not_legal" ? "not legal" : value
+                                            LegalitiesItem(value: displayValue, key: label.capitalized)
+                                        }
                                     }
                                 }
-                            }
-                            .padding()
-                        }else if selectedButton == "Versions" {
-                            Text("PRICES")
-                                .fontWeight(.bold)
-                                .foregroundColor(Color.red)
-                            
-                            ForEach(Array(Mirror(reflecting: mtgCards[currentIndex].prices ?? [:]).children), id: \.label) { child in
-                                if let label = child.label, let value = child.value as? String {
-                                    let formattedKey = label.replacingOccurrences(of: "_", with: " ").capitalized
-                                    PriceItem(value: value, key: formattedKey)
+                                .padding()
+                            }else if selectedButton == "Versions" {
+                                Text("PRICES")
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color.red)
+                                
+                                ForEach(Array(Mirror(reflecting: mtgCards[currentIndex].prices ?? [:]).children), id: \.label) { child in
+                                    if let label = child.label, let value = child.value as? String {
+                                        let formattedKey = label.replacingOccurrences(of: "_", with: " ").capitalized
+                                        PriceItem(value: value, key: formattedKey)
+                                    }
                                 }
+                                
+                                .padding()
                             }
+                        }
+                        HStack {
+                            Button("Previous") {
+                                navigateToPreviousCard()
+                            }
+                            .foregroundColor(.blue)
+                            .padding()
+                            .disabled(currentIndex == 0) // Disable the button if it's the first card
+                            
+                            Spacer()
+                            
+                            Button("Next") {
+                                navigateToNextCard()
+                            }
+                            .foregroundColor(.blue)
                             
                             .padding()
+                            .disabled(currentIndex == mtgCards.count - 1) // Disable the button if it's the last card
                         }
                     }
-                    HStack {
-                        Button("Previous") {
-                            navigateToPreviousCard()
-                        }
-                        .padding()
-                        .disabled(currentIndex == 0) // Disable the button if it's the first card
-                        
-                        Spacer()
-                        
-                        Button("Next") {
-                            navigateToNextCard()
-                        }
-                        .padding()
-                        .disabled(currentIndex == mtgCards.count - 1) // Disable the button if it's the last card
+                    .onTapGesture {
+                        isImagePopupVisible.toggle()
                     }
-                }
-                .onTapGesture {
-                    isImagePopupVisible.toggle()
-                }
-                .padding()
-                .sheet(isPresented: $isImagePopupVisible) {
-                    // Display the large image in a popup
-                    if let largeImageUrl = URL(string: mtgCards[currentIndex].image_uris?.large ?? "") {
-                        AsyncImage(url: largeImageUrl) { phase in
-                            switch phase {
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            case .failure:
-                                Text("Failed to load image")
-                            case .empty:
-                                ProgressView()
-                            @unknown default:
-                                ProgressView()
+                    .padding()
+                    .overlay(
+                        isImagePopupVisible ? AnyView(
+                            ZStack {
+                                Color.black.opacity(0.5).ignoresSafeArea()
+                                
+                                VStack {
+                                    if let largeImageUrl = URL(string: mtgCards[currentIndex].image_uris?.large ?? "") {
+                                        AsyncImage(url: largeImageUrl) { phase in
+                                            switch phase {
+                                            case .success(let image):
+                                                image
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                            case .failure:
+                                                Text("Failed to load image")
+                                            case .empty:
+                                                ProgressView()
+                                            @unknown default:
+                                                ProgressView()
+                                            }
+                                        }
+                                        .padding()
+                                    }
+                                }
+                      
                             }
-                        }
-                        .padding()
-                    }
+                            .onTapGesture {
+                                isImagePopupVisible.toggle()
+                            }
+                        ) : AnyView(EmptyView())
+                    )
+
+                    
                 }
-                
-            }
+            
             .gesture(
                 DragGesture()
                     .onEnded { gesture in
@@ -170,8 +186,6 @@ struct MTGCardView: View {
                     }
             )
         }
-        
-        
 
     }
     private func navigateToNextCard() {
